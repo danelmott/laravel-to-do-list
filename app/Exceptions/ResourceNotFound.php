@@ -4,12 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Override;
 
 class ResourceNotFound extends Exception
 {
-    #[Override]
-    public function __construct(string $resource = "recurso")
+    public function __construct(string $resource = 'recurso')
     {
         return parent::__construct("{$resource} not found", 404);
     }
@@ -17,8 +15,7 @@ class ResourceNotFound extends Exception
     public function render(): JsonResponse
     {
         return response()->json([
-            'message' => $this->getMessage()
+            'message' => $this->getMessage(),
         ], 404);
     }
-
 }

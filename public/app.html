@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container-buttons">
+        <button class="button" onclick="login()">
+            LOGIN
+        </button>
+
+        <button class="button" onclick="logout()">
+            LOGOUT
+        </button>
+
+        <button class="button" onclick="createTask()">
+            CREATE TASK           
+        </button>
+
+        <button class="button" onclick="loadTasks()">
+            TASKS
+        </button>
+        <button class="button" onclick="register()">
+            REGISTER
+        </button>
+    </div>
+
+    <pre id="out"></pre>
+</body>
+<script>
+    const out = document.getElementById('out');
+
+    const xsrf = () => {
+        const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+        return match ? decodeURIComponent(match[1]): '';
+    }
+
+    const show = (response) => {
+        console.log(response);
+        out.textContent = JSON.stringify(response, null, 2);
+    }
+
+    const api = async (url, options = {}) => {
+        const response = await fetch(url, {
+            credentials: 'same-origin',
+            ...options,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': xsrf(),
+                ...(options.headers || {}),
+            }
+        });
+
+        const data = await response.json();
+
+        return {
+            status: response.status,
+            data: data,
+        }
+    }
+
+    const register = async () => {
+        try {
+            await fetch('/sanctum/csrf-cookie', {credentials: 'same-origin'});
+            
+            const response = await api('/register', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    name: 'danel_mott',
+                    email: 'micorreodeprueba@gmail.com',
+                    password: 'Timoteo26@',
+                    password_confirmation: 'Timoteo26@'
+                }) 
+            });
+            show(response);
+        }
+        catch (error) {
+            alert('hubo un error al intentar registrarse');
+        }
+    }
+
+    const login = async () => {
+        try {
+            await fetch('/sanctum/csrf-cookie', {credentials: 'same-origin'});
+            const response = await api('/login', {
+                'method': 'POST',
+                body: JSON.stringify({
+                    email: 'micorreodeprueba@gmail.com',
+                    password: 'Timoteo26@',
+                })
+            });
+            show(response);
+        }
+        catch (error) {
+            alert('hubo un error al hacer login');
+        }
+    }
+
+    const loadTasks = async () => {
+        try {
+            const response = await api('/api/tasks', {method: 'GET'});
+            show(response);
+        }
+        catch (error) {
+            alert('hubo un error al listar las tareas');
+        }
+    }
+
+    const createTask = async () => {
+        try {
+            const response = await api('/api/tasks', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    title : 'ser la monda en laravel',
+                    description: 'aprender laravel completo antes de octubre, pq sisas'
+                })
+            });
+
+            show(response);
+        }
+        catch (error) {
+            alert('hubo un error al intentar crear la tarea');
+        }
+    }
+
+    const logout = async () => {
+            const response = await api('/logout', {method: 'POST'});
+            show(response);
+    }
+
+
+
+</script>
+</html>

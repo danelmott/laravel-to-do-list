@@ -27,7 +27,6 @@ class Task extends Model
         "description"
     ];
 
-    //sin nada peligroso que esconder aqui hermano
     protected $hidden = [
         ""
     ];

@@ -16,12 +16,12 @@ return new class extends Migration
             TIENE LA FK PARA CONECTAR LA TABLA CON LA DE USUARIOS
         */
         Schema::create('tasks', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid('id')->primary();
             $table->timestamps();
-            $table->string('title')->required();
+            $table->string('title');
             $table->string('description')->nullable();
             $table->boolean('completed')->nullable()->default(false);
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users', 'id')->cascadeOnDelete();
         });
     }
 

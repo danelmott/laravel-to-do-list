@@ -12,14 +12,14 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::cursorPaginate(15);
-
+        $user = $request->user();
+        $tasks = $user->tasks()->cursorPaginate(15);
 
         return response()->json([
             'message' => 'Tasks successfully retrieved',
-            'taks' => $tasks
+            'tasks' => $tasks
         ], 200);
 
     }

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TaskSeeder extends Seeder
@@ -12,6 +13,9 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Task::factory()
+            ->count(100)
+            ->recycle(User::all())
+            ->create();
     }
 }
